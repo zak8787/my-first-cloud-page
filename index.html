@@ -1,468 +1,1787 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>智旅 AI｜智慧旅遊行程規劃系統</title>
 
-    <title>結合生成式人工智慧與地理資訊之智慧旅遊行程規劃系統</title>
+<style>
+/* =====================================================
+   基礎設定
+===================================================== */
 
-    <style>
-        body {
-            font-family: "Microsoft JhengHei", Arial, sans-serif;
-            line-height: 1.8;
-            margin: 0;
-            padding: 0;
-            background-color: #f5f5f5;
-            color: #333;
-        }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        .container {
-            width: 85%;
-            max-width: 1000px;
-            margin: 40px auto;
-            background-color: white;
-            padding: 50px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
+:root {
+    --bg: #f4f7fb;
+    --card: rgba(255,255,255,0.82);
+    --text: #182230;
+    --subtext: #667085;
+    --primary: #4f46e5;
+    --primary2: #7c3aed;
+    --accent: #06b6d4;
+    --border: rgba(15,23,42,0.08);
+    --shadow: 0 20px 60px rgba(15,23,42,0.10);
+}
 
-        h1 {
-            text-align: center;
-            font-size: 32px;
-            margin-bottom: 50px;
-        }
+body.dark {
+    --bg: #08111f;
+    --card: rgba(15,23,42,0.78);
+    --text: #f8fafc;
+    --subtext: #94a3b8;
+    --border: rgba(255,255,255,0.08);
+    --shadow: 0 20px 60px rgba(0,0,0,0.35);
+}
 
-        h2 {
-            border-left: 6px solid #2c7be5;
-            padding-left: 12px;
-            margin-top: 50px;
-        }
+body {
+    font-family:
+        "Noto Sans TC",
+        "Microsoft JhengHei",
+        Arial,
+        sans-serif;
 
-        h3 {
-            margin-top: 30px;
-        }
+    background:
+        radial-gradient(
+            circle at 10% 10%,
+            rgba(79,70,229,0.13),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 90% 20%,
+            rgba(6,182,212,0.12),
+            transparent 30%
+        ),
+        var(--bg);
 
-        .title {
-            text-align: center;
-            margin-bottom: 60px;
-        }
+    color: var(--text);
+    min-height: 100vh;
+    transition: 0.3s;
+}
 
-        .title h1 {
-            margin-bottom: 20px;
-        }
+/* =====================================================
+   導覽列
+===================================================== */
 
-        .keywords {
-            margin-top: 20px;
-            font-weight: bold;
-        }
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 
-        .toc {
-            line-height: 2;
-        }
+    height: 74px;
 
-        .toc-item {
-            display: flex;
-            justify-content: space-between;
-            border-bottom: 1px dotted #aaa;
-        }
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
-        .list {
-            line-height: 2;
-        }
+    padding: 0 6%;
 
-        footer {
-            margin-top: 80px;
-            padding-top: 20px;
-            border-top: 1px solid #ddd;
-            text-align: center;
-            color: #777;
-        }
-    </style>
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+
+    background: rgba(255,255,255,0.65);
+    border-bottom: 1px solid var(--border);
+}
+
+.dark .navbar {
+    background: rgba(8,17,31,0.72);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    font-weight: 900;
+    font-size: 20px;
+}
+
+.logo-icon {
+    width: 42px;
+    height: 42px;
+
+    border-radius: 14px;
+
+    display: grid;
+    place-items: center;
+
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--primary),
+            var(--primary2)
+        );
+
+    box-shadow:
+        0 8px 25px rgba(79,70,229,0.35);
+}
+
+.nav-links {
+    display: flex;
+    gap: 28px;
+}
+
+.nav-links a {
+    color: var(--subtext);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.25s;
+}
+
+.nav-links a:hover {
+    color: var(--primary);
+}
+
+.nav-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.icon-btn {
+    width: 40px;
+    height: 40px;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    background: var(--card);
+    color: var(--text);
+
+    cursor: pointer;
+    font-size: 17px;
+}
+
+/* =====================================================
+   Hero
+===================================================== */
+
+.hero {
+    width: min(1200px, 90%);
+    margin: 70px auto 40px;
+
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+
+    gap: 50px;
+    align-items: center;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 8px 14px;
+
+    border-radius: 50px;
+
+    background: rgba(79,70,229,0.1);
+    color: var(--primary);
+
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.hero h1 {
+    margin-top: 22px;
+
+    font-size: clamp(40px, 5vw, 68px);
+
+    line-height: 1.08;
+
+    letter-spacing: -3px;
+}
+
+.gradient-text {
+    background:
+        linear-gradient(
+            90deg,
+            #4f46e5,
+            #7c3aed,
+            #06b6d4
+        );
+
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.hero p {
+    margin-top: 25px;
+
+    font-size: 17px;
+    line-height: 1.9;
+
+    color: var(--subtext);
+
+    max-width: 650px;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 14px;
+    margin-top: 32px;
+}
+
+.btn {
+    border: none;
+    cursor: pointer;
+
+    padding: 14px 22px;
+
+    border-radius: 14px;
+
+    font-weight: 800;
+
+    transition: 0.25s;
+}
+
+.btn-primary {
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--primary),
+            var(--primary2)
+        );
+
+    box-shadow:
+        0 12px 30px rgba(79,70,229,0.30);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+}
+
+.btn-secondary {
+    background: var(--card);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+/* =====================================================
+   AI 視覺卡片
+===================================================== */
+
+.ai-visual {
+    position: relative;
+
+    min-height: 430px;
+
+    border-radius: 35px;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(79,70,229,0.92),
+            rgba(6,182,212,0.85)
+        );
+
+    box-shadow: var(--shadow);
+}
+
+.ai-glow {
+    position: absolute;
+
+    width: 300px;
+    height: 300px;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,0.15);
+
+    filter: blur(10px);
+
+    top: -100px;
+    right: -70px;
+}
+
+.ai-card {
+    position: absolute;
+
+    left: 35px;
+    right: 35px;
+    top: 45px;
+    bottom: 45px;
+
+    border-radius: 25px;
+
+    background: rgba(255,255,255,0.14);
+
+    border: 1px solid rgba(255,255,255,0.25);
+
+    backdrop-filter: blur(20px);
+
+    color: white;
+
+    padding: 28px;
+}
+
+.ai-title {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.ai-card h2 {
+    margin-top: 10px;
+    font-size: 28px;
+}
+
+.route {
+    margin-top: 25px;
+}
+
+.route-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    margin-bottom: 17px;
+}
+
+.route-dot {
+    width: 13px;
+    height: 13px;
+
+    border-radius: 50%;
+
+    background: white;
+
+    box-shadow:
+        0 0 0 6px rgba(255,255,255,0.12);
+}
+
+.route-line {
+    width: 2px;
+    height: 20px;
+
+    background: rgba(255,255,255,0.3);
+
+    margin-left: 6px;
+}
+
+/* =====================================================
+   主內容
+===================================================== */
+
+.section {
+    width: min(1200px, 90%);
+    margin: 90px auto;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+
+    margin-bottom: 30px;
+}
+
+.section-header h2 {
+    font-size: 32px;
+}
+
+.section-header p {
+    color: var(--subtext);
+}
+
+/* =====================================================
+   規劃器
+===================================================== */
+
+.planner {
+    display: grid;
+
+    grid-template-columns: 0.85fr 1.15fr;
+
+    gap: 25px;
+}
+
+.panel {
+    background: var(--card);
+
+    border: 1px solid var(--border);
+
+    border-radius: 25px;
+
+    padding: 28px;
+
+    box-shadow: var(--shadow);
+
+    backdrop-filter: blur(18px);
+}
+
+.panel-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 25px;
+}
+
+.panel-title h3 {
+    font-size: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    font-size: 13px;
+    font-weight: 800;
+
+    color: var(--subtext);
+}
+
+.input,
+select {
+    width: 100%;
+
+    padding: 13px 14px;
+
+    border-radius: 12px;
+
+    border: 1px solid var(--border);
+
+    outline: none;
+
+    background: rgba(255,255,255,0.55);
+
+    color: var(--text);
+
+    font-size: 14px;
+}
+
+.dark .input,
+.dark select {
+    background: rgba(255,255,255,0.05);
+}
+
+.input:focus,
+select:focus {
+    border-color: var(--primary);
+}
+
+/* =====================================================
+   偏好選擇
+===================================================== */
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+}
+
+.tag {
+    padding: 8px 12px;
+
+    border-radius: 50px;
+
+    border: 1px solid var(--border);
+
+    background: rgba(255,255,255,0.45);
+
+    color: var(--subtext);
+
+    cursor: pointer;
+
+    font-size: 13px;
+
+    transition: 0.2s;
+}
+
+.dark .tag {
+    background: rgba(255,255,255,0.05);
+}
+
+.tag.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+/* =====================================================
+   地圖
+===================================================== */
+
+.map {
+    height: 350px;
+
+    position: relative;
+
+    overflow: hidden;
+
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #dbeafe,
+            #e0f2fe,
+            #ecfeff
+        );
+}
+
+.dark .map {
+    background:
+        linear-gradient(
+            135deg,
+            #162033,
+            #102a3a
+        );
+}
+
+.map::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background-image:
+        linear-gradient(
+            30deg,
+            transparent 48%,
+            rgba(255,255,255,0.7) 49%,
+            transparent 51%
+        ),
+        linear-gradient(
+            120deg,
+            transparent 48%,
+            rgba(255,255,255,0.6) 49%,
+            transparent 51%
+        );
+
+    background-size: 100px 100px;
+
+    opacity: 0.5;
+}
+
+.road {
+    position: absolute;
+
+    width: 110%;
+    height: 18px;
+
+    background: rgba(255,255,255,0.75);
+
+    transform: rotate(-15deg);
+
+    top: 45%;
+    left: -5%;
+}
+
+.road2 {
+    position: absolute;
+
+    width: 120%;
+    height: 12px;
+
+    background: rgba(255,255,255,0.65);
+
+    transform: rotate(35deg);
+
+    top: 55%;
+    left: -10%;
+}
+
+.pin {
+    position: absolute;
+
+    width: 34px;
+    height: 34px;
+
+    border-radius: 50% 50% 50% 0;
+
+    transform: rotate(-45deg);
+
+    background: var(--primary);
+
+    box-shadow:
+        0 8px 20px rgba(79,70,229,0.4);
+}
+
+.pin::after {
+    content: "";
+
+    position: absolute;
+
+    width: 10px;
+    height: 10px;
+
+    border-radius: 50%;
+
+    background: white;
+
+    top: 12px;
+    left: 12px;
+}
+
+.pin1 {
+    left: 22%;
+    top: 25%;
+}
+
+.pin2 {
+    left: 48%;
+    top: 55%;
+}
+
+.pin3 {
+    left: 72%;
+    top: 30%;
+}
+
+.map-label {
+    position: absolute;
+
+    left: 20px;
+    bottom: 18px;
+
+    padding: 9px 13px;
+
+    border-radius: 10px;
+
+    background: rgba(255,255,255,0.88);
+
+    color: #182230;
+
+    font-size: 12px;
+
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+/* =====================================================
+   行程結果
+===================================================== */
+
+.itinerary {
+    margin-top: 30px;
+}
+
+.day {
+    margin-bottom: 25px;
+}
+
+.day-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    margin-bottom: 15px;
+}
+
+.day-number {
+    width: 42px;
+    height: 42px;
+
+    border-radius: 13px;
+
+    display: grid;
+    place-items: center;
+
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--primary),
+            var(--primary2)
+        );
+
+    font-weight: 900;
+}
+
+.timeline {
+    border-left: 2px dashed rgba(79,70,229,0.25);
+
+    margin-left: 20px;
+
+    padding-left: 25px;
+}
+
+.timeline-item {
+    position: relative;
+
+    padding: 17px;
+
+    margin-bottom: 14px;
+
+    border-radius: 16px;
+
+    background: rgba(255,255,255,0.45);
+
+    border: 1px solid var(--border);
+}
+
+.dark .timeline-item {
+    background: rgba(255,255,255,0.035);
+}
+
+.timeline-item::before {
+    content: "";
+
+    position: absolute;
+
+    width: 10px;
+    height: 10px;
+
+    border-radius: 50%;
+
+    background: var(--primary);
+
+    left: -31px;
+    top: 23px;
+}
+
+.time {
+    font-size: 12px;
+
+    color: var(--primary);
+
+    font-weight: 900;
+}
+
+.place {
+    font-size: 16px;
+
+    font-weight: 900;
+
+    margin-top: 4px;
+}
+
+.description {
+    margin-top: 5px;
+
+    color: var(--subtext);
+
+    font-size: 13px;
+}
+
+/* =====================================================
+   統計卡片
+===================================================== */
+
+.stats {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 18px;
+}
+
+.stat-card {
+    padding: 23px;
+
+    border-radius: 20px;
+
+    background: var(--card);
+
+    border: 1px solid var(--border);
+
+    box-shadow: var(--shadow);
+}
+
+.stat-icon {
+    font-size: 25px;
+}
+
+.stat-value {
+    margin-top: 15px;
+
+    font-size: 28px;
+
+    font-weight: 900;
+}
+
+.stat-name {
+    color: var(--subtext);
+
+    font-size: 13px;
+
+    margin-top: 5px;
+}
+
+/* =====================================================
+   Footer
+===================================================== */
+
+footer {
+    margin-top: 100px;
+
+    padding: 45px 6%;
+
+    border-top: 1px solid var(--border);
+
+    text-align: center;
+
+    color: var(--subtext);
+}
+
+footer strong {
+    color: var(--text);
+}
+
+/* =====================================================
+   AI Loading
+===================================================== */
+
+.loading {
+    display: none;
+
+    text-align: center;
+
+    padding: 35px;
+}
+
+.loading.active {
+    display: block;
+}
+
+.spinner {
+    width: 45px;
+    height: 45px;
+
+    border: 4px solid rgba(79,70,229,0.15);
+
+    border-top-color: var(--primary);
+
+    border-radius: 50%;
+
+    animation: spin 1s linear infinite;
+
+    margin: auto;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* =====================================================
+   RWD
+===================================================== */
+
+@media (max-width: 900px) {
+
+    .hero,
+    .planner {
+        grid-template-columns: 1fr;
+    }
+
+    .stats {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+    .nav-links {
+        display: none;
+    }
+
+    .hero {
+        margin-top: 40px;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .container,
+    .section,
+    .hero {
+        width: 92%;
+    }
+
+    .navbar {
+        padding: 0 4%;
+    }
+
+    .hero h1 {
+        font-size: 42px;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+
+    .panel {
+        padding: 20px;
+    }
+}
+</style>
 </head>
+
 
 <body>
 
-<div class="container">
+<!-- =====================================================
+     導覽列
+===================================================== -->
 
-    <!-- 封面 -->
-    <section class="title">
+<header class="navbar">
+
+    <div class="logo">
+
+        <div class="logo-icon">
+            ✦
+        </div>
+
+        智旅 AI
+
+    </div>
+
+
+    <nav class="nav-links">
+
+        <a href="#home">首頁</a>
+
+        <a href="#planner">智慧規劃</a>
+
+        <a href="#map">地圖</a>
+
+        <a href="#result">我的行程</a>
+
+    </nav>
+
+
+    <div class="nav-actions">
+
+        <button
+            class="icon-btn"
+            onclick="toggleTheme()"
+            title="切換模式">
+            ◐
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- =====================================================
+     Hero
+===================================================== -->
+
+<main id="home">
+
+<section class="hero">
+
+    <div>
+
+        <span class="badge">
+            ✨ Generative AI × GIS
+        </span>
+
+
         <h1>
-            結合生成式人工智慧與地理資訊之<br>
-            智慧旅遊行程規劃系統
+
+            讓 AI<br>
+
+            <span class="gradient-text">
+                為你規劃旅程
+            </span>
+
         </h1>
 
-        <p>大學專題研究報告</p>
-    </section>
-
-
-    <!-- 中文摘要 -->
-    <section>
-        <h2>中文摘要</h2>
 
         <p>
-            隨著生成式人工智慧（Generative Artificial Intelligence, Generative AI）
-            與地理資訊技術（Geographic Information System, GIS）的快速發展，
-            人工智慧逐漸應用於旅遊規劃、資訊搜尋與個人化推薦等領域。
-            傳統旅遊行程規劃通常需要使用者自行搜尋景點、查詢交通資訊並安排景點順序，
-            不僅耗費時間，也可能因景點距離、營業時間及行程時間等因素造成規劃上的困難。
+            結合生成式人工智慧與地理資訊技術，
+            根據你的旅遊偏好、時間、預算與交通方式，
+            自動打造專屬於你的智慧旅遊行程。
         </p>
 
-        <p>
-            因此，本研究旨在開發一套結合生成式人工智慧與地理資訊之智慧旅遊行程規劃系統，
-            以協助使用者快速產生符合個人需求的旅遊行程。
-            本系統透過使用者輸入旅遊地點、旅遊日期、旅遊天數、預算、交通方式及興趣偏好等條件，
-            結合生成式人工智慧進行自然語言理解與行程內容生成，
-            再搭配地理資訊技術分析景點位置、距離及行程順序，
-            產生具備時間安排與地理位置資訊的旅遊規劃結果。
-        </p>
 
-        <p>
-            系統亦可將規劃完成的景點與行程以地圖方式呈現，
-            使使用者能夠更直觀地了解旅遊路線與景點分布。
-            本研究期望透過生成式人工智慧與地理資訊技術的整合，
-            降低使用者規劃旅遊行程所需的時間與操作成本，
-            並提升行程規劃的便利性與個人化程度。
-        </p>
+        <div class="hero-buttons">
 
-        <p>
-            <strong>關鍵詞：</strong>
-            生成式人工智慧、地理資訊系統、智慧旅遊、行程規劃、個人化推薦
-        </p>
-    </section>
+            <a
+                href="#planner"
+                class="btn btn-primary"
+                style="text-decoration:none;">
+                開始規劃旅程 →
+            </a>
+
+            <button
+                class="btn btn-secondary"
+                onclick="showDemo()">
+                查看系統特色
+            </button>
+
+        </div>
+
+    </div>
 
 
-    <!-- 英文摘要 -->
-    <section>
-        <h2>Abstract</h2>
+    <div class="ai-visual">
 
-        <p>
-            With the rapid development of Generative Artificial Intelligence
-            (Generative AI) and Geographic Information System (GIS) technologies,
-            artificial intelligence has been increasingly applied to travel planning,
-            information retrieval, and personalized recommendation services.
-        </p>
+        <div class="ai-glow"></div>
 
-        <p>
-            Traditional travel planning usually requires users to search for attractions,
-            transportation information, opening hours, and suitable routes by themselves.
-            This process can be time-consuming and may result in inefficient itineraries
-            due to factors such as geographical distance, travel time, and attraction schedules.
-        </p>
+        <div class="ai-card">
 
-        <p>
-            Therefore, this study aims to develop an intelligent travel itinerary
-            planning system that integrates Generative AI with geographic information
-            technology to assist users in efficiently creating personalized travel itineraries.
-        </p>
-
-        <p>
-            The proposed system allows users to provide travel-related requirements,
-            including destination, travel dates, duration, budget, transportation methods,
-            and personal interests. Generative AI is utilized to understand the user's
-            requirements and generate appropriate itinerary content.
-            Geographic information technology is integrated to analyze the locations
-            and distances between attractions and to arrange an appropriate visiting sequence.
-        </p>
-
-        <p>
-            The system also presents the planned attractions and routes on a digital map,
-            allowing users to clearly understand the geographical distribution of attractions
-            and the overall travel route.
-        </p>
-
-        <p>
-            <strong>Keywords:</strong>
-            Generative Artificial Intelligence,
-            Geographic Information System,
-            Smart Tourism,
-            Travel Itinerary Planning,
-            Personalized Recommendation
-        </p>
-    </section>
-
-
-    <!-- 目錄 -->
-    <section>
-        <h2>目錄</h2>
-
-        <div class="toc">
-
-            <div class="toc-item">
-                <span>摘要</span>
-                <span>I</span>
+            <div class="ai-title">
+                AI SMART ITINERARY
             </div>
 
-            <div class="toc-item">
-                <span>Abstract</span>
-                <span>II</span>
-            </div>
+            <h2>
+                台南・三日旅行
+            </h2>
 
-            <div class="toc-item">
-                <span>目錄</span>
-                <span>III</span>
-            </div>
+            <div class="route">
 
-            <div class="toc-item">
-                <span>表目錄</span>
-                <span>IV</span>
-            </div>
+                <div class="route-item">
 
-            <div class="toc-item">
-                <span>圖目錄</span>
-                <span>V</span>
-            </div>
+                    <div class="route-dot"></div>
 
-            <h3>第一章　緒論</h3>
+                    <div>
+                        安平古堡
+                        <br>
+                        <small>09:00 – 10:30</small>
+                    </div>
 
-            <div class="toc-item">
-                <span>1.1 研究背景</span>
-                <span>1</span>
-            </div>
+                </div>
 
-            <div class="toc-item">
-                <span>1.2 研究動機</span>
-                <span>2</span>
-            </div>
+                <div class="route-line"></div>
 
-            <div class="toc-item">
-                <span>1.3 研究目的</span>
-                <span>3</span>
-            </div>
+                <div class="route-item">
 
-            <div class="toc-item">
-                <span>1.4 研究範圍</span>
-                <span>4</span>
-            </div>
+                    <div class="route-dot"></div>
 
-            <div class="toc-item">
-                <span>1.5 研究流程</span>
-                <span>5</span>
-            </div>
+                    <div>
+                        安平老街
+                        <br>
+                        <small>10:45 – 12:00</small>
+                    </div>
 
-            <div class="toc-item">
-                <span>1.6 論文架構</span>
-                <span>6</span>
-            </div>
+                </div>
 
+                <div class="route-line"></div>
 
-            <h3>第二章　文獻探討</h3>
+                <div class="route-item">
 
-            <div class="toc-item">
-                <span>2.1 生成式人工智慧</span>
-                <span>7</span>
-            </div>
+                    <div class="route-dot"></div>
 
-            <div class="toc-item">
-                <span>2.2 大型語言模型</span>
-                <span>8</span>
-            </div>
+                    <div>
+                        神農街
+                        <br>
+                        <small>14:00 – 16:00</small>
+                    </div>
 
-            <div class="toc-item">
-                <span>2.3 地理資訊系統</span>
-                <span>9</span>
-            </div>
+                </div>
 
-            <div class="toc-item">
-                <span>2.4 智慧旅遊</span>
-                <span>10</span>
-            </div>
-
-            <div class="toc-item">
-                <span>2.5 旅遊行程規劃</span>
-                <span>11</span>
-            </div>
-
-
-            <h3>第三章　系統分析與設計</h3>
-
-            <div class="toc-item">
-                <span>3.1 系統需求分析</span>
-                <span>14</span>
-            </div>
-
-            <div class="toc-item">
-                <span>3.2 系統架構</span>
-                <span>15</span>
-            </div>
-
-            <div class="toc-item">
-                <span>3.3 系統功能分析</span>
-                <span>16</span>
-            </div>
-
-            <div class="toc-item">
-                <span>3.4 使用者需求分析</span>
-                <span>17</span>
-            </div>
-
-            <div class="toc-item">
-                <span>3.5 系統流程設計</span>
-                <span>18</span>
-            </div>
-
-
-            <h3>第四章　系統實作</h3>
-
-            <div class="toc-item">
-                <span>4.1 開發環境</span>
-                <span>25</span>
-            </div>
-
-            <div class="toc-item">
-                <span>4.2 系統介面設計</span>
-                <span>26</span>
-            </div>
-
-            <div class="toc-item">
-                <span>4.3 使用者登入與基本資料</span>
-                <span>27</span>
-            </div>
-
-            <div class="toc-item">
-                <span>4.4 旅遊需求輸入功能</span>
-                <span>28</span>
-            </div>
-
-            <div class="toc-item">
-                <span>4.5 AI 智慧行程產生功能</span>
-                <span>29</span>
-            </div>
-
-            <div class="toc-item">
-                <span>4.6 地圖與景點資訊功能</span>
-                <span>31</span>
-            </div>
-
-
-            <h3>第五章　系統測試與結果</h3>
-
-            <div class="toc-item">
-                <span>5.1 系統測試方法</span>
-                <span>37</span>
-            </div>
-
-            <div class="toc-item">
-                <span>5.2 功能測試</span>
-                <span>38</span>
-            </div>
-
-            <div class="toc-item">
-                <span>5.3 AI 行程產生測試</span>
-                <span>40</span>
-            </div>
-
-            <div class="toc-item">
-                <span>5.4 地圖與路線測試</span>
-                <span>42</span>
-            </div>
-
-
-            <h3>第六章　結論與未來展望</h3>
-
-            <div class="toc-item">
-                <span>6.1 研究成果</span>
-                <span>46</span>
-            </div>
-
-            <div class="toc-item">
-                <span>6.2 研究限制</span>
-                <span>47</span>
-            </div>
-
-            <div class="toc-item">
-                <span>6.3 未來發展</span>
-                <span>48</span>
-            </div>
-
-            <div class="toc-item">
-                <span>參考文獻</span>
-                <span>49</span>
             </div>
 
         </div>
-    </section>
+
+    </div>
+
+</section>
 
 
-    <!-- 表目錄 -->
-    <section>
-        <h2>表目錄</h2>
+<!-- =====================================================
+     系統統計
+===================================================== -->
 
-        <div class="list">
+<section class="section">
 
-            <p>表 2-1　生成式人工智慧相關技術比較</p>
-            <p>表 2-2　地理資訊系統相關技術比較</p>
-            <p>表 2-3　相關旅遊行程規劃系統比較</p>
+    <div class="stats">
 
-            <p>表 3-1　系統功能需求表</p>
-            <p>表 3-2　系統非功能需求表</p>
-            <p>表 3-3　使用者需求分析表</p>
-            <p>表 3-4　系統功能模組表</p>
-            <p>表 3-5　資料庫資料表說明</p>
+        <div class="stat-card">
 
-            <p>表 4-1　系統開發環境</p>
-            <p>表 4-2　系統硬體需求</p>
-            <p>表 4-3　系統軟體需求</p>
-            <p>表 4-4　API 與第三方服務</p>
+            <div class="stat-icon">
+                🧠
+            </div>
 
-            <p>表 5-1　系統功能測試結果</p>
-            <p>表 5-2　AI 行程產生測試結果</p>
-            <p>表 5-3　地圖與路線功能測試結果</p>
-            <p>表 5-4　整體系統測試結果</p>
+            <div class="stat-value">
+                AI
+            </div>
 
-        </div>
-    </section>
-
-
-    <!-- 圖目錄 -->
-    <section>
-        <h2>圖目錄</h2>
-
-        <div class="list">
-
-            <p>圖 1-1　研究流程圖</p>
-
-            <p>圖 2-1　生成式人工智慧運作概念圖</p>
-            <p>圖 2-2　地理資訊系統架構</p>
-            <p>圖 2-3　智慧旅遊服務架構</p>
-
-            <p>圖 3-1　系統整體架構圖</p>
-            <p>圖 3-2　系統功能架構圖</p>
-            <p>圖 3-3　系統使用案例圖</p>
-            <p>圖 3-4　使用者操作流程圖</p>
-            <p>圖 3-5　智慧行程規劃流程圖</p>
-            <p>圖 3-6　生成式 AI 行程產生流程圖</p>
-            <p>圖 3-7　地理資訊處理流程圖</p>
-            <p>圖 3-8　系統資料流程圖</p>
-            <p>圖 3-9　資料庫實體關聯圖</p>
-
-            <p>圖 4-1　系統首頁</p>
-            <p>圖 4-2　使用者登入介面</p>
-            <p>圖 4-3　旅遊需求輸入介面</p>
-            <p>圖 4-4　旅遊日期與天數設定介面</p>
-            <p>圖 4-5　旅遊偏好設定介面</p>
-            <p>圖 4-6　AI 行程產生介面</p>
-            <p>圖 4-7　智慧旅遊行程結果</p>
-            <p>圖 4-8　地圖景點顯示介面</p>
-            <p>圖 4-9　旅遊路線規劃介面</p>
-            <p>圖 4-10　行程修改介面</p>
-            <p>圖 4-11　景點詳細資訊介面</p>
-
-            <p>圖 5-1　系統功能測試流程</p>
-            <p>圖 5-2　AI 行程產生測試結果</p>
-            <p>圖 5-3　地圖路線測試結果</p>
-            <p>圖 5-4　系統整體測試結果</p>
+            <div class="stat-name">
+                智慧行程生成
+            </div>
 
         </div>
-    </section>
 
 
-    <footer>
-        <p>
-            結合生成式人工智慧與地理資訊之智慧旅遊行程規劃系統
-        </p>
-    </footer>
+        <div class="stat-card">
 
-</div>
+            <div class="stat-icon">
+                📍
+            </div>
+
+            <div class="stat-value">
+                GIS
+            </div>
+
+            <div class="stat-name">
+                地理資訊整合
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🗺️
+            </div>
+
+            <div class="stat-value">
+                MAP
+            </div>
+
+            <div class="stat-name">
+                景點地圖視覺化
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                ⚡
+            </div>
+
+            <div class="stat-value">
+                AI × GIS
+            </div>
+
+            <div class="stat-name">
+                智慧旅遊整合
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     智慧規劃
+===================================================== -->
+
+<section
+    class="section"
+    id="planner">
+
+    <div class="section-header">
+
+        <div>
+
+            <h2>
+                開始規劃你的旅程
+            </h2>
+
+            <p>
+                告訴 AI 你的需求，其餘交給我們。
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="planner">
+
+
+        <!-- 左側設定 -->
+
+        <div class="panel">
+
+            <div class="panel-title">
+
+                <h3>
+                    ✦ 旅遊需求
+                </h3>
+
+                <span>
+                    AI
+                </span>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    旅遊目的地
+                </label>
+
+                <input
+                    id="destination"
+                    class="input"
+                    type="text"
+                    value="台南市"
+                    placeholder="例如：台南、高雄、台北">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    旅遊天數
+                </label>
+
+                <select id="days">
+
+                    <option value="1">
+                        1 天
+                    </option>
+
+                    <option value="2">
+                        2 天
+                    </option>
+
+                    <option value="3" selected>
+                        3 天
+                    </option>
+
+                    <option value="4">
+                        4 天
+                    </option>
+
+                    <option value="5">
+                        5 天
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    交通方式
+                </label>
+
+                <select id="transport">
+
+                    <option>
+                        機車
+                    </option>
+
+                    <option>
+                        汽車
+                    </option>
+
+                    <option>
+                        大眾運輸
+                    </option>
+
+                    <option>
+                        步行
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    旅遊偏好
+                </label>
+
+                <div class="tags">
+
+                    <button
+                        class="tag active"
+                        onclick="toggleTag(this)">
+                        🍜 美食
+                    </button>
+
+                    <button
+                        class="tag active"
+                        onclick="toggleTag(this)">
+                        🏛️ 歷史文化
+                    </button>
+
+                    <button
+                        class="tag"
+                        onclick="toggleTag(this)">
+                        🌿 自然景觀
+                    </button>
+
+                    <button
+                        class="tag"
+                        onclick="toggleTag(this)">
+                        📸 網美景點
+                    </button>
+
+                    <button
+                        class="tag"
+                        onclick="toggleTag(this)">
+                        🛍️ 購物
+                    </button>
+
+                    <button
+                        class="tag"
+                        onclick="toggleTag(this)">
+                        ☕ 咖啡廳
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="btn btn-primary"
+                style="width:100%; margin-top:10px;"
+                onclick="generatePlan()">
+
+                ✨ AI 生成智慧行程
+
+            </button>
+
+        </div>
+
+
+        <!-- 右側地圖 -->
+
+        <div class="panel" id="map">
+
+            <div class="panel-title">
+
+                <h3>
+                    📍 景點地圖
+                </h3>
+
+                <span>
+                    GIS
+                </span>
+
+            </div>
+
+
+            <div class="map">
+
+                <div class="road"></div>
+
+                <div class="road2"></div>
+
+
+                <div class="pin pin1"></div>
+
+                <div class="pin pin2"></div>
+
+                <div class="pin pin3"></div>
+
+
+                <div class="map-label">
+
+                    📍 AI 已分析 12 個推薦景點
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     AI 行程結果
+===================================================== -->
+
+<section
+    class="section"
+    id="result">
+
+    <div class="section-header">
+
+        <div>
+
+            <h2>
+                AI 智慧行程
+            </h2>
+
+            <p id="resultText">
+                根據你的需求產生的推薦行程
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div
+        class="panel">
+
+        <div
+            class="loading"
+            id="loading">
+
+            <div class="spinner"></div>
+
+            <p style="margin-top:15px;">
+                AI 正在分析景點、距離與行程時間...
+            </p>
+
+        </div>
+
+
+        <div
+            class="itinerary"
+            id="itinerary">
+
+            <!-- Day 1 -->
+
+            <div class="day">
+
+                <div class="day-title">
+
+                    <div class="day-number">
+                        01
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            古城文化 × 在地美食
+                        </strong>
+
+                        <div
+                            style="color:var(--subtext);font-size:13px;">
+                            安平 → 中西區
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="timeline">
+
+                    <div class="timeline-item">
+
+                        <div class="time">
+                            09:00
+                        </div>
+
+                        <div class="place">
+                            安平古堡
+                        </div>
+
+                        <div class="description">
+                            探索台南歷史文化，
+                            建議停留約 90 分鐘。
+                        </div>
+
+                    </div>
+
+
+                    <div class="timeline-item">
+
+                        <div class="time">
+                            11:00
+                        </div>
+
+                        <div class="place">
+                            安平老街
+                        </div>
+
+                        <div class="description">
+                            品嚐台南特色小吃。
+                        </div>
+
+                    </div>
+
+
+                    <div class="timeline-item">
+
+                        <div class="time">
+                            14:00
+                        </div>
+
+                        <div class="place">
+                            神農街
+                        </div>
+
+                        <div class="description">
+                            老街散步、特色店家與拍照。
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Day 2 -->
+
+            <div class="day">
+
+                <div class="day-title">
+
+                    <div class="day-number">
+                        02
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            城市漫遊 × 文創體驗
+                        </strong>
+
+                        <div
+                            style="color:var(--subtext);font-size:13px;">
+                            中西區 → 東區
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="timeline">
+
+                    <div class="timeline-item">
+
+                        <div class="time">
+                            09:30
+                        </div>
+
+                        <div class="place">
+                            台南孔廟
+                        </div>
+
+                        <div class="description">
+                            感受台南古蹟與人文氣息。
+                        </div>
+
+                    </div>
+
+
+                    <div class="timeline-item">
+
+                        <div class="time">
+                            13:00
+                        </div>
+
+                        <div class="place">
+                            藍晒圖文創園區
+                        </div>
+
+                        <div class="description">
+                            文創空間、特色店家與拍照景點。
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Day 3 -->
+
+            <div class="day">
+
+                <div class="day-title">
+
+                    <div class="day-number">
+                        03
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            自然景觀 × 美食收尾
+                        </strong>
+
+                        <div
+                            style="color:var(--subtext);font-size:13px;">
+                            台南市區
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="timeline">
+
+                    <div class="timeline-item">
+
+                        <div class="time">
+                            09:00
+                        </div>
+
+                        <div class="place">
+                            四草綠色隧道
+                        </div>
+
+                        <div class="description">
+                            欣賞自然生態與水上景觀。
+                        </div>
+
+                    </div>
+
+
+                    <div class="timeline-item">
+
+                        <div class="time">
+                            14:00
+                        </div>
+
+                        <div class="place">
+                            花園夜市
+                        </div>
+
+                        <div class="description">
+                            以台南特色美食結束旅程。
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<!-- =====================================================
+     Footer
+===================================================== -->
+
+<footer>
+
+    <strong>
+        智旅 AI
+    </strong>
+
+    <br>
+
+    結合生成式人工智慧與地理資訊之智慧旅遊行程規劃系統
+
+    <br><br>
+
+    <small>
+        大學專題展示系統
+    </small>
+
+</footer>
+
+
+<script>
+
+/* =====================================================
+   深色模式
+===================================================== */
+
+function toggleTheme() {
+
+    document.body.classList.toggle("dark");
+
+}
+
+
+/* =====================================================
+   偏好標籤
+===================================================== */
+
+function toggleTag(element) {
+
+    element.classList.toggle("active");
+
+}
+
+
+/* =====================================================
+   AI 生成行程
+===================================================== */
+
+function generatePlan() {
+
+    const loading =
+        document.getElementById("loading");
+
+    const itinerary =
+        document.getElementById("itinerary");
+
+    const destination =
+        document.getElementById("destination").value;
+
+    const days =
+        document.getElementById("days").value;
+
+    const resultText =
+        document.getElementById("resultText");
+
+
+    itinerary.style.display = "none";
+
+    loading.classList.add("active");
+
+
+    setTimeout(function() {
+
+        loading.classList.remove("active");
+
+        itinerary.style.display = "block";
+
+
+        resultText.innerHTML =
+            `AI 已根據「${destination}」與 ${days} 天旅程需求完成行程分析。`;
+
+    }, 1800);
+
+}
+
+
+/* =====================================================
+   Demo
+===================================================== */
+
+function showDemo() {
+
+    alert(
+        "系統特色：\n\n" +
+        "✓ Generative AI 智慧行程生成\n" +
+        "✓ GIS 地理資訊分析\n" +
+        "✓ 景點位置與路線視覺化\n" +
+        "✓ 個人化旅遊偏好\n" +
+        "✓ 智慧時間安排\n" +
+        "✓ 響應式網站設計"
+    );
+
+}
+
+</script>
 
 </body>
 </html>
