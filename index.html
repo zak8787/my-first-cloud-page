@@ -1,10 +1,468 @@
 <!DOCTYPE html>
-<html>
-  <head>
-  <title>我的第一個雲端網頁</title>
-  </head>
-  <body style="text-align:center; padding-top:50pt; font-famliy:sans-serif;">
-    <h1>Hello cloud Computing! Ａ120E110施信瑋</h1>
-    <p>這是我第一次把檔案放到雲端上！</p>
-  </body>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>結合生成式人工智慧與地理資訊之智慧旅遊行程規劃系統</title>
+
+    <style>
+        body {
+            font-family: "Microsoft JhengHei", Arial, sans-serif;
+            line-height: 1.8;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .container {
+            width: 85%;
+            max-width: 1000px;
+            margin: 40px auto;
+            background-color: white;
+            padding: 50px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            border-left: 6px solid #2c7be5;
+            padding-left: 12px;
+            margin-top: 50px;
+        }
+
+        h3 {
+            margin-top: 30px;
+        }
+
+        .title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .title h1 {
+            margin-bottom: 20px;
+        }
+
+        .keywords {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .toc {
+            line-height: 2;
+        }
+
+        .toc-item {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px dotted #aaa;
+        }
+
+        .list {
+            line-height: 2;
+        }
+
+        footer {
+            margin-top: 80px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            color: #777;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- 封面 -->
+    <section class="title">
+        <h1>
+            結合生成式人工智慧與地理資訊之<br>
+            智慧旅遊行程規劃系統
+        </h1>
+
+        <p>大學專題研究報告</p>
+    </section>
+
+
+    <!-- 中文摘要 -->
+    <section>
+        <h2>中文摘要</h2>
+
+        <p>
+            隨著生成式人工智慧（Generative Artificial Intelligence, Generative AI）
+            與地理資訊技術（Geographic Information System, GIS）的快速發展，
+            人工智慧逐漸應用於旅遊規劃、資訊搜尋與個人化推薦等領域。
+            傳統旅遊行程規劃通常需要使用者自行搜尋景點、查詢交通資訊並安排景點順序，
+            不僅耗費時間，也可能因景點距離、營業時間及行程時間等因素造成規劃上的困難。
+        </p>
+
+        <p>
+            因此，本研究旨在開發一套結合生成式人工智慧與地理資訊之智慧旅遊行程規劃系統，
+            以協助使用者快速產生符合個人需求的旅遊行程。
+            本系統透過使用者輸入旅遊地點、旅遊日期、旅遊天數、預算、交通方式及興趣偏好等條件，
+            結合生成式人工智慧進行自然語言理解與行程內容生成，
+            再搭配地理資訊技術分析景點位置、距離及行程順序，
+            產生具備時間安排與地理位置資訊的旅遊規劃結果。
+        </p>
+
+        <p>
+            系統亦可將規劃完成的景點與行程以地圖方式呈現，
+            使使用者能夠更直觀地了解旅遊路線與景點分布。
+            本研究期望透過生成式人工智慧與地理資訊技術的整合，
+            降低使用者規劃旅遊行程所需的時間與操作成本，
+            並提升行程規劃的便利性與個人化程度。
+        </p>
+
+        <p>
+            <strong>關鍵詞：</strong>
+            生成式人工智慧、地理資訊系統、智慧旅遊、行程規劃、個人化推薦
+        </p>
+    </section>
+
+
+    <!-- 英文摘要 -->
+    <section>
+        <h2>Abstract</h2>
+
+        <p>
+            With the rapid development of Generative Artificial Intelligence
+            (Generative AI) and Geographic Information System (GIS) technologies,
+            artificial intelligence has been increasingly applied to travel planning,
+            information retrieval, and personalized recommendation services.
+        </p>
+
+        <p>
+            Traditional travel planning usually requires users to search for attractions,
+            transportation information, opening hours, and suitable routes by themselves.
+            This process can be time-consuming and may result in inefficient itineraries
+            due to factors such as geographical distance, travel time, and attraction schedules.
+        </p>
+
+        <p>
+            Therefore, this study aims to develop an intelligent travel itinerary
+            planning system that integrates Generative AI with geographic information
+            technology to assist users in efficiently creating personalized travel itineraries.
+        </p>
+
+        <p>
+            The proposed system allows users to provide travel-related requirements,
+            including destination, travel dates, duration, budget, transportation methods,
+            and personal interests. Generative AI is utilized to understand the user's
+            requirements and generate appropriate itinerary content.
+            Geographic information technology is integrated to analyze the locations
+            and distances between attractions and to arrange an appropriate visiting sequence.
+        </p>
+
+        <p>
+            The system also presents the planned attractions and routes on a digital map,
+            allowing users to clearly understand the geographical distribution of attractions
+            and the overall travel route.
+        </p>
+
+        <p>
+            <strong>Keywords:</strong>
+            Generative Artificial Intelligence,
+            Geographic Information System,
+            Smart Tourism,
+            Travel Itinerary Planning,
+            Personalized Recommendation
+        </p>
+    </section>
+
+
+    <!-- 目錄 -->
+    <section>
+        <h2>目錄</h2>
+
+        <div class="toc">
+
+            <div class="toc-item">
+                <span>摘要</span>
+                <span>I</span>
+            </div>
+
+            <div class="toc-item">
+                <span>Abstract</span>
+                <span>II</span>
+            </div>
+
+            <div class="toc-item">
+                <span>目錄</span>
+                <span>III</span>
+            </div>
+
+            <div class="toc-item">
+                <span>表目錄</span>
+                <span>IV</span>
+            </div>
+
+            <div class="toc-item">
+                <span>圖目錄</span>
+                <span>V</span>
+            </div>
+
+            <h3>第一章　緒論</h3>
+
+            <div class="toc-item">
+                <span>1.1 研究背景</span>
+                <span>1</span>
+            </div>
+
+            <div class="toc-item">
+                <span>1.2 研究動機</span>
+                <span>2</span>
+            </div>
+
+            <div class="toc-item">
+                <span>1.3 研究目的</span>
+                <span>3</span>
+            </div>
+
+            <div class="toc-item">
+                <span>1.4 研究範圍</span>
+                <span>4</span>
+            </div>
+
+            <div class="toc-item">
+                <span>1.5 研究流程</span>
+                <span>5</span>
+            </div>
+
+            <div class="toc-item">
+                <span>1.6 論文架構</span>
+                <span>6</span>
+            </div>
+
+
+            <h3>第二章　文獻探討</h3>
+
+            <div class="toc-item">
+                <span>2.1 生成式人工智慧</span>
+                <span>7</span>
+            </div>
+
+            <div class="toc-item">
+                <span>2.2 大型語言模型</span>
+                <span>8</span>
+            </div>
+
+            <div class="toc-item">
+                <span>2.3 地理資訊系統</span>
+                <span>9</span>
+            </div>
+
+            <div class="toc-item">
+                <span>2.4 智慧旅遊</span>
+                <span>10</span>
+            </div>
+
+            <div class="toc-item">
+                <span>2.5 旅遊行程規劃</span>
+                <span>11</span>
+            </div>
+
+
+            <h3>第三章　系統分析與設計</h3>
+
+            <div class="toc-item">
+                <span>3.1 系統需求分析</span>
+                <span>14</span>
+            </div>
+
+            <div class="toc-item">
+                <span>3.2 系統架構</span>
+                <span>15</span>
+            </div>
+
+            <div class="toc-item">
+                <span>3.3 系統功能分析</span>
+                <span>16</span>
+            </div>
+
+            <div class="toc-item">
+                <span>3.4 使用者需求分析</span>
+                <span>17</span>
+            </div>
+
+            <div class="toc-item">
+                <span>3.5 系統流程設計</span>
+                <span>18</span>
+            </div>
+
+
+            <h3>第四章　系統實作</h3>
+
+            <div class="toc-item">
+                <span>4.1 開發環境</span>
+                <span>25</span>
+            </div>
+
+            <div class="toc-item">
+                <span>4.2 系統介面設計</span>
+                <span>26</span>
+            </div>
+
+            <div class="toc-item">
+                <span>4.3 使用者登入與基本資料</span>
+                <span>27</span>
+            </div>
+
+            <div class="toc-item">
+                <span>4.4 旅遊需求輸入功能</span>
+                <span>28</span>
+            </div>
+
+            <div class="toc-item">
+                <span>4.5 AI 智慧行程產生功能</span>
+                <span>29</span>
+            </div>
+
+            <div class="toc-item">
+                <span>4.6 地圖與景點資訊功能</span>
+                <span>31</span>
+            </div>
+
+
+            <h3>第五章　系統測試與結果</h3>
+
+            <div class="toc-item">
+                <span>5.1 系統測試方法</span>
+                <span>37</span>
+            </div>
+
+            <div class="toc-item">
+                <span>5.2 功能測試</span>
+                <span>38</span>
+            </div>
+
+            <div class="toc-item">
+                <span>5.3 AI 行程產生測試</span>
+                <span>40</span>
+            </div>
+
+            <div class="toc-item">
+                <span>5.4 地圖與路線測試</span>
+                <span>42</span>
+            </div>
+
+
+            <h3>第六章　結論與未來展望</h3>
+
+            <div class="toc-item">
+                <span>6.1 研究成果</span>
+                <span>46</span>
+            </div>
+
+            <div class="toc-item">
+                <span>6.2 研究限制</span>
+                <span>47</span>
+            </div>
+
+            <div class="toc-item">
+                <span>6.3 未來發展</span>
+                <span>48</span>
+            </div>
+
+            <div class="toc-item">
+                <span>參考文獻</span>
+                <span>49</span>
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- 表目錄 -->
+    <section>
+        <h2>表目錄</h2>
+
+        <div class="list">
+
+            <p>表 2-1　生成式人工智慧相關技術比較</p>
+            <p>表 2-2　地理資訊系統相關技術比較</p>
+            <p>表 2-3　相關旅遊行程規劃系統比較</p>
+
+            <p>表 3-1　系統功能需求表</p>
+            <p>表 3-2　系統非功能需求表</p>
+            <p>表 3-3　使用者需求分析表</p>
+            <p>表 3-4　系統功能模組表</p>
+            <p>表 3-5　資料庫資料表說明</p>
+
+            <p>表 4-1　系統開發環境</p>
+            <p>表 4-2　系統硬體需求</p>
+            <p>表 4-3　系統軟體需求</p>
+            <p>表 4-4　API 與第三方服務</p>
+
+            <p>表 5-1　系統功能測試結果</p>
+            <p>表 5-2　AI 行程產生測試結果</p>
+            <p>表 5-3　地圖與路線功能測試結果</p>
+            <p>表 5-4　整體系統測試結果</p>
+
+        </div>
+    </section>
+
+
+    <!-- 圖目錄 -->
+    <section>
+        <h2>圖目錄</h2>
+
+        <div class="list">
+
+            <p>圖 1-1　研究流程圖</p>
+
+            <p>圖 2-1　生成式人工智慧運作概念圖</p>
+            <p>圖 2-2　地理資訊系統架構</p>
+            <p>圖 2-3　智慧旅遊服務架構</p>
+
+            <p>圖 3-1　系統整體架構圖</p>
+            <p>圖 3-2　系統功能架構圖</p>
+            <p>圖 3-3　系統使用案例圖</p>
+            <p>圖 3-4　使用者操作流程圖</p>
+            <p>圖 3-5　智慧行程規劃流程圖</p>
+            <p>圖 3-6　生成式 AI 行程產生流程圖</p>
+            <p>圖 3-7　地理資訊處理流程圖</p>
+            <p>圖 3-8　系統資料流程圖</p>
+            <p>圖 3-9　資料庫實體關聯圖</p>
+
+            <p>圖 4-1　系統首頁</p>
+            <p>圖 4-2　使用者登入介面</p>
+            <p>圖 4-3　旅遊需求輸入介面</p>
+            <p>圖 4-4　旅遊日期與天數設定介面</p>
+            <p>圖 4-5　旅遊偏好設定介面</p>
+            <p>圖 4-6　AI 行程產生介面</p>
+            <p>圖 4-7　智慧旅遊行程結果</p>
+            <p>圖 4-8　地圖景點顯示介面</p>
+            <p>圖 4-9　旅遊路線規劃介面</p>
+            <p>圖 4-10　行程修改介面</p>
+            <p>圖 4-11　景點詳細資訊介面</p>
+
+            <p>圖 5-1　系統功能測試流程</p>
+            <p>圖 5-2　AI 行程產生測試結果</p>
+            <p>圖 5-3　地圖路線測試結果</p>
+            <p>圖 5-4　系統整體測試結果</p>
+
+        </div>
+    </section>
+
+
+    <footer>
+        <p>
+            結合生成式人工智慧與地理資訊之智慧旅遊行程規劃系統
+        </p>
+    </footer>
+
+</div>
+
+</body>
 </html>
